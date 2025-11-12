@@ -21,9 +21,14 @@
             print "<tr>";
             print "<td>" . $row->id_funcionario . "</td>";
             print "<td>" . $row->nome_funcionario . "</td>";
-            print "<td>" . $row->cpf_funcionario . "</td>";
-            print "<td>" . $row->email_funcionario . "</td>";
-            print "<td>" . $row->fone_funcionario . "</td>";
+            
+            // CORREÇÃO 1: Garante que a propriedade existe antes de tentar acessá-la
+            print "<td>" . htmlspecialchars($row->cpf_funcionario ?? '') . "</td>";
+            print "<td>" . htmlspecialchars($row->email_funcionario ?? '') . "</td>";
+
+            // CORREÇÃO 2: Usa 'telefone_funcionario' em vez de 'fone_funcionario'
+            print "<td>" . htmlspecialchars($row->telefone_funcionario ?? '') . "</td>";
+            
             print "<td>
                         <button onclick=\"location.href='?page=editar-funcionario&id=".$row->id_funcionario."';\" class='btn btn-success'>Editar</button>
                         <button onclick=\"if(confirm('Tem certeza que deseja excluir?')){location.href='?page=salvar-funcionario&acao=excluir&id=".$row->id_funcionario."';}else{false;}\" class='btn btn-danger'>Excluir</button>

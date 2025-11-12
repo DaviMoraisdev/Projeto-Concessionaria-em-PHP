@@ -15,7 +15,7 @@
 	</div>
 	<div class="mb-3">
 		<label>Telefone</label>
-		<input type="text" name="fone_cliente" class="form-control">
+		<input type="text" name="telefone_cliente" class="form-control">
 	</div>
     <div class="mb-3">
 		<label>Data de Nascimento</label>

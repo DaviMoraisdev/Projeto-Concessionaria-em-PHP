@@ -4,14 +4,21 @@
     <div class="mb-3">
 		<label>Marca do Veículo</label>
 		<select name="marca_id_marca" class="form-control" required>
-			<option value="">-Selecione a Marca-</option>
+			<option value="">- Selecione a Marca -</option>
 			<?php
-				//aqui você precisa buscar as marcas do banco de dados
-				//$sql = "SELECT * FROM marca";
-				//$res = $conn->query($sql);
-				//while($row = $res->fetch_object()){
-				//	print "<option value='".$row->id_marca."'>".$row->nome_marca."</option>";
-				//}
+				// Código descomentado para buscar as marcas
+				$sql = "SELECT * FROM marca ORDER BY nome_marca ASC";
+				$res = $conn->query($sql);
+				
+                // Verifica se encontrou alguma marca
+				if ($res->num_rows > 0) {
+                    // Loop para criar uma <option> para cada marca encontrada
+					while($row = $res->fetch_object()){
+						print "<option value='".$row->id_marca."'>".$row->nome_marca."</option>";
+					}
+				} else {
+                    print "<option>Nenhuma marca cadastrada</option>";
+                }
 			?>
 		</select>
 	</div>
@@ -31,7 +38,7 @@
 		<label>Placa</label>
 		<input type="text" name="placa_modelo" class="form-control" required>
 	</div>
-	<div>
+	<div class="mb-3">
 		<button type="submit" class="btn btn-primary">Enviar</button>
 	</div>
 </form>

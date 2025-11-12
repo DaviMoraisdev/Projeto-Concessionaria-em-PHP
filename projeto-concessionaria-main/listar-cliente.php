@@ -24,7 +24,8 @@
             print "<td>" . $row->nome_cliente . "</td>";
             print "<td>" . $row->cpf_cliente . "</td>";
             print "<td>" . $row->email_cliente . "</td>";
-            print "<td>" . $row->fone_cliente . "</td>";
+            // Corrigido aqui para ler a coluna correta do banco
+            print "<td>" . $row->telefone_cliente . "</td>";
             print "<td>" . $row->data_nasc_cliente . "</td>";
             print "<td>
                         <button onclick=\"location.href='?page=editar-cliente&id=".$row->id_cliente."';\" class='btn btn-success'>Editar</button>

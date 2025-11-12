@@ -4,11 +4,12 @@ switch ($_REQUEST['acao']) {
         $nome = $_POST['nome_cliente'];
         $cpf = $_POST['cpf_cliente'];
         $email = $_POST['email_cliente'];
-        $fone = $_POST['fone_cliente'];
+        $telefone = $_POST['telefone_cliente']; // Corrigido de 'fone_cliente'
         $data_nasc = $_POST['data_nasc_cliente'];
 
-        $sql = "INSERT INTO cliente (nome_cliente, cpf_cliente, email_cliente, fone_cliente, data_nasc_cliente) 
-                VALUES ('{$nome}', '{$cpf}', '{$email}', '{$fone}', '{$data_nasc}')";
+        // Corrigido 'fone_cliente' para 'telefone_cliente' na query
+        $sql = "INSERT INTO cliente (nome_cliente, cpf_cliente, email_cliente, telefone_cliente, data_nasc_cliente) 
+                VALUES ('{$nome}', '{$cpf}', '{$email}', '{$telefone}', '{$data_nasc}')";
 
         $res = $conn->query($sql);
 
@@ -25,14 +26,15 @@ switch ($_REQUEST['acao']) {
         $nome = $_POST['nome_cliente'];
         $cpf = $_POST['cpf_cliente'];
         $email = $_POST['email_cliente'];
-        $fone = $_POST['fone_cliente'];
+        $telefone = $_POST['telefone_cliente']; // Corrigido de 'fone_cliente'
         $data_nasc = $_POST['data_nasc_cliente'];
 
+        // Corrigido 'fone_cliente' para 'telefone_cliente' na query
         $sql = "UPDATE cliente SET
                     nome_cliente='{$nome}',
                     cpf_cliente='{$cpf}',
                     email_cliente='{$email}',
-                    fone_cliente='{$fone}',
+                    telefone_cliente='{$telefone}',
                     data_nasc_cliente='{$data_nasc}'
                 WHERE id_cliente=" . $_POST['id'];
 
