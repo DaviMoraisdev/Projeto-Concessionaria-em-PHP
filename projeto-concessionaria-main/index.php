@@ -82,6 +82,8 @@
 		<div class="row">
 			<div class="col">
 				<?php
+                    include('config.php');
+
 					switch (@$_REQUEST['page']) {
 						// funcionário
 						case 'cadastrar-funcionario':
