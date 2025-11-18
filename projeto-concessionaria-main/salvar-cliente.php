@@ -1,4 +1,5 @@
 <?php
+// salvar-cliente.php
 $acao = $_REQUEST['acao'] ?? '';
 
 switch ($acao) {
@@ -6,17 +7,18 @@ switch ($acao) {
         $nome = $_POST['nome_cliente'] ?? '';
         $cpf = $_POST['cpf_cliente'] ?? '';
         $email = $_POST['email_cliente'] ?? '';
-        $data_nasc = $_POST['data_nasc_cliente'] ?? null; // se existir no seu form
+        $telefone = $_POST['telefone_cliente'] ?? null;
+        $data_nasc = $_POST['data_nasc_cliente'] ?? null;
 
-        $stmt = $conn->prepare("INSERT INTO cliente (nome_cliente, cpf_cliente, email_cliente, data_nasc_cliente) VALUES (?, ?, ?, ?)");
-        $stmt->bind_param("ssss", $nome, $cpf, $email, $data_nasc);
+        $stmt = $conn->prepare("INSERT INTO cliente (nome_cliente, cpf_cliente, email_cliente, telefone_cliente, data_nasc_cliente) VALUES (?, ?, ?, ?, ?)");
+        $stmt->bind_param("sssss", $nome, $cpf, $email, $telefone, $data_nasc);
         $ok = $stmt->execute();
 
         if ($ok) {
             echo "<script>alert('Cliente cadastrado com sucesso!');location.href='?page=listar-cliente';</script>";
         } else {
             $erro = addslashes($stmt->error ?: $conn->error);
-            echo "<script>alert('Não foi possível cadastrar o cliente. Erro: {$erro}');location.href='?page=listar-cliente';</script>";
+            echo "<script>alert('Não foi possível cadastrar o cliente. Erro: {$erro}');location.href='?page=cadastrar-cliente';</script>";
         }
         $stmt->close();
         break;
@@ -31,17 +33,18 @@ switch ($acao) {
         $nome = $_POST['nome_cliente'] ?? '';
         $cpf = $_POST['cpf_cliente'] ?? '';
         $email = $_POST['email_cliente'] ?? '';
+        $telefone = $_POST['telefone_cliente'] ?? null;
         $data_nasc = $_POST['data_nasc_cliente'] ?? null;
 
-        $stmt = $conn->prepare("UPDATE cliente SET nome_cliente = ?, cpf_cliente = ?, email_cliente = ?, data_nasc_cliente = ? WHERE id_cliente = ?");
-        $stmt->bind_param("ssssi", $nome, $cpf, $email, $data_nasc, $id);
+        $stmt = $conn->prepare("UPDATE cliente SET nome_cliente = ?, cpf_cliente = ?, email_cliente = ?, telefone_cliente = ?, data_nasc_cliente = ? WHERE id_cliente = ?");
+        $stmt->bind_param("sssssi", $nome, $cpf, $email, $telefone, $data_nasc, $id);
         $ok = $stmt->execute();
 
         if ($ok) {
             echo "<script>alert('Cliente editado com sucesso!');location.href='?page=listar-cliente';</script>";
         } else {
             $erro = addslashes($stmt->error ?: $conn->error);
-            echo "<script>alert('Não foi possível editar o cliente. Erro: {$erro}');location.href='?page=listar-cliente';</script>";
+            echo "<script>alert('Não foi possível editar o cliente. Erro: {$erro}');location.href='?page=editar-cliente&id={$id}';</script>";
         }
         $stmt->close();
         break;

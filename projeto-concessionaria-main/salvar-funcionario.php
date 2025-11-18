@@ -1,90 +1,78 @@
 <?php
-    // Garante que 'acao' exista
-    $acao = $_REQUEST['acao'] ?? '';
+// Garante que 'acao' exista
+$acao = $_REQUEST['acao'] ?? '';
 
-    switch ($acao) {
-        case 'cadastrar':
-            $nome = $_POST['nome_funcionario'] ?? '';
-            $cpf = $_POST['cpf_funcionario'] ?? '';
-            $email = $_POST['email_funcionario'] ?? '';
-            $telefone = $_POST['telefone_funcionario'] ?? '';
+switch ($acao) {
+    case 'cadastrar':
+        $nome = $_POST['nome_funcionario'] ?? '';
+        $cpf = $_POST['cpf_funcionario'] ?? '';
+        $email = $_POST['email_funcionario'] ?? '';
+        $telefone = $_POST['telefone_funcionario'] ?? '';
 
-            // Ajuste: inclui cpf (se a coluna existir no banco)
-            $sql = "INSERT INTO funcionario (nome_funcionario, cpf_funcionario, email_funcionario, telefone_funcionario) VALUES ('{$nome}', '{$cpf}', '{$email}', '{$telefone}')";
+        $stmt = $conn->prepare("INSERT INTO funcionario (nome_funcionario, cpf_funcionario, email_funcionario, telefone_funcionario) VALUES (?, ?, ?, ?)");
+        $stmt->bind_param("ssss", $nome, $cpf, $email, $telefone);
+        $ok = $stmt->execute();
 
-            $res = $conn->query($sql);
+        if ($ok) {
+            echo "<script>alert('Cadastrou com sucesso!');location.href='?page=listar-funcionario';</script>";
+        } else {
+            $erro = addslashes($stmt->error ?: $conn->error);
+            echo "<script>alert('Não cadastrou! Erro: " . $erro . "');location.href='?page/listar-funcionario';</script>";
+        }
+        $stmt->close();
+        break;
 
-            if ($res == true) {
-                print "<script>alert('Cadastrou com sucesso!');</script>";
-                print "<script>location.href='?page=listar-funcionario';</script>";
-            } else {
-                $erro = $conn->error;
-                print "<script>alert('Não cadastrou! Erro: " . addslashes($erro) . "');</script>";
-                print "<script>location.href='?page=listar-funcionario';</script>";
-            }
-            break;
+    case 'editar':
+        // Pega id enviado pelo formulário (name="id")
+        $id = isset($_POST['id']) ? (int)$_POST['id'] : 0;
 
-        case 'editar':
-            // Pega id enviado pelo formulário (name="id")
-            $id = isset($_POST['id']) ? (int)$_POST['id'] : 0;
+        if ($id <= 0) {
+            echo "<script>alert('ID inválido para edição.');location.href='?page=listar-funcionario';</script>";
+            exit;
+        }
 
-            if ($id <= 0) {
-                print "<script>alert('ID inválido para edição.');</script>";
-                print "<script>location.href='?page=listar-funcionario';</script>";
-                exit;
-            }
+        $nome = $_POST['nome_funcionario'] ?? '';
+        $cpf = $_POST['cpf_funcionario'] ?? '';
+        $email = $_POST['email_funcionario'] ?? '';
+        $telefone = $_POST['telefone_funcionario'] ?? '';
 
-            $nome = $_POST['nome_funcionario'] ?? '';
-            $cpf = $_POST['cpf_funcionario'] ?? '';
-            $email = $_POST['email_funcionario'] ?? '';
-            $telefone = $_POST['telefone_funcionario'] ?? '';
+        $stmt = $conn->prepare("UPDATE funcionario SET nome_funcionario = ?, cpf_funcionario = ?, email_funcionario = ?, telefone_funcionario = ? WHERE id_funcionario = ?");
+        $stmt->bind_param("ssssi", $nome, $cpf, $email, $telefone, $id);
+        $ok = $stmt->execute();
 
-            // Atualiza inclusive o CPF
-            $sql = "UPDATE funcionario SET
-                        nome_funcionario='{$nome}',
-                        cpf_funcionario='{$cpf}',
-                        email_funcionario='{$email}',
-                        telefone_funcionario='{$telefone}'
-                    WHERE id_funcionario = {$id}";
+        if ($ok) {
+            echo "<script>alert('Editou com sucesso!');location.href='?page=listar-funcionario';</script>";
+        } else {
+            $erro = addslashes($stmt->error ?: $conn->error);
+            echo "<script>alert('Não editou! Erro: " . $erro . "');location.href='?page=listar-funcionario';</script>";
+        }
+        $stmt->close();
+        break;
 
-            $res = $conn->query($sql);
+    case 'excluir':
+        // Aceita id via GET ou POST (listar envia via GET)
+        $id = isset($_REQUEST['id']) ? (int)$_REQUEST['id'] : 0;
 
-            if ($res == true) {
-                print "<script>alert('Editou com sucesso!');</script>";
-                print "<script>location.href='?page=listar-funcionario';</script>";
-            } else {
-                $erro = $conn->error;
-                print "<script>alert('Não editou! Erro: " . addslashes($erro) . "');</script>";
-                print "<script>location.href='?page=listar-funcionario';</script>";
-            }
-            break;
+        if ($id <= 0) {
+            echo "<script>alert('ID inválido para exclusão.');location.href='?page=listar-funcionario';</script>";
+            exit;
+        }
 
-        case 'excluir':
-            // Aceita id via GET ou POST (listar envia via GET)
-            $id = isset($_REQUEST['id']) ? (int)$_REQUEST['id'] : 0;
+        $stmt = $conn->prepare("DELETE FROM funcionario WHERE id_funcionario = ?");
+        $stmt->bind_param("i", $id);
+        $ok = $stmt->execute();
 
-            if ($id <= 0) {
-                print "<script>alert('ID inválido para exclusão.');</script>";
-                print "<script>location.href='?page=listar-funcionario';</script>";
-                exit;
-            }
+        if ($ok) {
+            echo "<script>alert('Excluiu com sucesso!');location.href='?page=listar-funcionario';</script>";
+        } else {
+            $erro = addslashes($stmt->error ?: $conn->error);
+            echo "<script>alert('Não excluiu! Erro: " . $erro . "');location.href='?page/listar-funcionario';</script>";
+        }
+        $stmt->close();
+        break;
 
-            $sql = "DELETE FROM funcionario WHERE id_funcionario = {$id}";
-
-            $res = $conn->query($sql);
-
-            if ($res == true) {
-                print "<script>alert('Excluiu com sucesso!');</script>";
-                print "<script>location.href='?page=listar-funcionario';</script>";
-            } else {
-                $erro = $conn->error;
-                print "<script>alert('Não excluiu! Erro: " . addslashes($erro) . "');</script>";
-                print "<script>location.href='?page=listar-funcionario';</script>";
-            }
-            break;
-
-        default:
-            // Ação desconhecida: redireciona para listagem (opcional)
-            print "<script>location.href='?page=listar-funcionario';</script>";
-            break;
-    }
+    default:
+        // Ação desconhecida: redireciona para listagem (opcional)
+        echo "<script>location.href='?page=listar-funcionario';</script>";
+        break;
+}
