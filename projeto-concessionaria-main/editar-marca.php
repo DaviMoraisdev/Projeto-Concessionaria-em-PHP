@@ -1,12 +1,7 @@
 <h1>Editar Marca</h1>
 <?php
-    // 1. Mover toda a lógica PHP para o topo.
-    // 2. Usar $_REQUEST['id'] para pegar o ID da URL.
-    // 3. Corrigir o nome da tabela para 'marca' (singular).
     $sql = "SELECT * FROM marca WHERE id_marca = " . $_REQUEST['id'];
     $res = $conn->query($sql);
-    
-    // Pega a linha de resultado como um objeto.
     $row = $res->fetch_object();
 ?>
 
